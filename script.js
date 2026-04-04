@@ -1,31 +1,30 @@
 let inventory = []; // CRITICAL: This must be at the top
 
 window.addEventListener('DOMContentLoaded', async () => {
-    console.log("Connecting to L'ESSENCE Brain...");
+    console.log("Attempting to connect to Render...");
     
     try {
-        // REPLACE THE URL BELOW WITH YOUR ACTUAL RENDER URL
-        const res = await fetch('https://YOUR-BACKEND-NAME.onrender.com/api/products');
+        const res = await fetch('https://YOUR-NAME.onrender.com/api/products');
         
-        if (!res.ok) throw new Error("Server responded with error");
+        console.log("Response Status:", res.status); // Should be 200
         
+        if (!res.ok) {
+            console.error("Server reached but returned an error.");
+            return;
+        }
+
         inventory = await res.json();
-        console.log("Inventory Loaded:", inventory);
+        console.log("Inventory Data Received:", inventory);
         
-        // If we are already on the main page, show products
-        if (document.getElementById('collections')) {
+        if (inventory.length > 0) {
             renderProducts('all');
+            console.log("Products rendered successfully!");
+        } else {
+            console.warn("Inventory is empty. Check your database on Render.");
         }
+
     } catch (error) {
-        console.error("Backend Connection Failed:", error);
-        // PRO TIP: If the server is down, show a friendly message to the client
-        const grid = document.getElementById('collections');
-        if (grid) {
-            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px;">
-                <p>Establishing secure connection to Private Blend Vault...</p>
-                <p style="font-size: 0.7rem; color: #666;">(Please refresh in 30 seconds while the server wakes up)</p>
-            </div>`;
-        }
+        console.error("CONNECTION FAILED! Reason:", error.message);
     }
 });
 
