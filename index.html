@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'ESSENCE | Private Blend Collection</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <section id="home-splash">
+        <h1 class="splash-logo brand-font">L'ESSENCE</h1>
+        <div style="font-family: 'Inter', sans-serif; letter-spacing: 10px; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 60px; color: #aaa;">Private Blend</div>
+        <button class="enter-btn" onclick="enterBoutique()">Enter Collection</button>
+    </section>
+
+    <div id="main-content" style="opacity: 0; transition: 1.5s;">
+        <header>
+            <div class="header-utility">
+                <div>IN / INR</div>
+                <div id="promo-text" style="color: var(--text); font-weight: 600;">Complimentary shipping on orders over 10,000/-</div>
+                <div>Account / Client Services</div>
+            </div>
+
+            <div class="header-main">
+                <div class="logo-nav brand-font">L'ESSENCE</div>
+                <nav class="nav-tabs">
+                    <a onclick="filterBoutique('all')">All Fragrances</a>
+                    <a onclick="filterBoutique('bestseller')" style="color: var(--text);">Icons</a>
+                    <a onclick="filterBoutique('combo')">Discovery</a>
+                    <a href="javascript:void(0)" onclick="toggleCart(true)" style="color: var(--text); border-bottom: 1px solid var(--text); padding-bottom: 5px;">Cart (<span id="cart-count">0</span>)</a>
+                </nav>
+                <div id="progress-line"></div>
+            </div>
+        </header>
+
+        <main>
+            <div class="filter-bar" id="filter-bar">
+                <button class="filter-btn active" onclick="filterBoutique('all', this)">View All</button>
+                <button class="filter-btn" onclick="filterBoutique('high-lux', this)">Private Blend</button>
+                <button class="filter-btn" onclick="filterBoutique('luxury', this)">Signature</button>
+                <button class="filter-btn" onclick="filterBoutique('mid', this)">Reserve</button>
+                <button class="filter-btn" onclick="filterBoutique('budget', this)">Essentials</button>
+            </div>
+
+            <section id="collections" class="boutique-grid"></section>
+        </main>
+    </div>
+
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart(false)">
+        <div class="cart-drawer" onclick="event.stopPropagation()">
+            <div class="bag-header">
+                <h2 class="brand-font">Your Selection</h2>
+                <span class="close-cart" onclick="toggleCart(false)">×</span>
+            </div>
+            
+            <div class="cart-scroll-area">
+                <div id="cart-items"></div>
+                
+                <div id="cart-checkout-details" style="display: none; padding-bottom: 40px;">
+                    
+                    <div style="padding: 20px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); display: flex; gap: 10px; margin-top: 20px;">
+                        <input type="text" id="promo-input" placeholder="ENTER DISCOUNT CODE" style="width: 70%; border: 1px solid var(--border); padding: 12px 15px; font-size: 0.7rem; outline: none; text-transform: uppercase;">
+                        <button class="btn-secondary" style="width: 30%; margin: 0; font-size: 0.65rem; padding: 0;" onclick="applyPromo()">APPLY</button>
+                    </div>
+                    <div id="promo-msg" style="font-size: 0.65rem; margin-top: 10px; letter-spacing: 1px; text-transform: uppercase;"></div>
+
+                    <div class="order-summary" style="background: var(--bg); border: 1px solid var(--border); padding: 25px; margin: 25px 0;">
+                        <div style="font-size: 0.75rem; font-weight: 600; letter-spacing: 3px; font-family: 'Jost', sans-serif; margin-bottom: 20px;">ORDER SUMMARY</div>
+                        
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 15px; color: var(--muted);">
+                            <span>Subtotal</span> <span id="sum-sub">0/-</span>
+                        </div>
+                        <div id="sum-discount-row" style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 15px; color: #4caf50; display: none;">
+                            <span>Discount Applied</span> <span id="sum-discount">-0/-</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 15px; color: var(--muted);">
+                            <span>Shipping</span> <span id="sum-ship">150/-</span>
+                        </div>
+                        <div id="sum-wrap-row" style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 15px; color: var(--muted); display: none;">
+                            <span>Signature Wrap</span> <span>+500/-</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 1rem; margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--border); font-weight: 600;">
+                            <span>GRAND TOTAL</span> <span id="sum-total">0/-</span>
+                        </div>
+                    </div>
+
+                    <div style="padding: 20px 0;">
+                        <input type="checkbox" id="gift-wrap" onchange="updateUI()" style="accent-color: var(--text);">
+                        <label for="gift-wrap" style="font-size: 0.75rem; letter-spacing: 2px; font-weight: 500; color: var(--muted); text-transform: uppercase; margin-left: 10px;">Signature Packaging (+500/-)</label>
+                    </div>
+
+                    <div class="shipping-form" style="margin-top: 10px; border-top: 1px solid var(--border); padding-top: 25px;">
+                        <div style="font-size: 0.7rem; color: var(--text); letter-spacing: 2px; margin-bottom: 20px; font-weight: 600; font-family: 'Jost', sans-serif;">SHIPPING DETAILS</div>
+                        <input type="text" id="cust-name" placeholder="Full Name" style="width: 100%; border: none; border-bottom: 1px solid var(--border); padding: 12px 0; margin-bottom: 15px; font-size: 0.8rem; outline: none;">
+                        <input type="email" id="cust-email" placeholder="Email Address" style="width: 100%; border: none; border-bottom: 1px solid var(--border); padding: 12px 0; margin-bottom: 15px; font-size: 0.8rem; outline: none;">
+                        <input type="tel" id="cust-phone" placeholder="Phone Number" style="width: 100%; border: none; border-bottom: 1px solid var(--border); padding: 12px 0; margin-bottom: 15px; font-size: 0.8rem; outline: none;">
+                        <input type="text" id="cust-address" placeholder="Street Address" style="width: 100%; border: none; border-bottom: 1px solid var(--border); padding: 12px 0; margin-bottom: 15px; font-size: 0.8rem; outline: none;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="cart-footer" id="cart-footer" style="display: none;">
+                <button id="checkout-btn" class="btn-tf" style="padding: 22px;" onclick="validateAndShowPayment()">Checkout Securely</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="payment-modal-overlay" id="otp-modal" onclick="closeOTPModal()">
+        <div class="payment-modal" onclick="event.stopPropagation()">
+            <span class="close-modal" onclick="closeOTPModal()">×</span>
+            <h3 class="brand-font" style="font-size: 1.5rem; letter-spacing: 4px; margin-bottom: 15px;">VERIFICATION</h3>
+            <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 30px; line-height: 1.5; text-transform: uppercase;">Enter the 6-digit authorization code dispatched to your email.</p>
+            <input type="text" id="otp-input" placeholder="------" maxlength="6" style="width: 100%; border: none; border-bottom: 2px solid var(--text); padding: 15px 0; margin-bottom: 30px; font-size: 2rem; text-align: center; letter-spacing: 15px; outline: none;">
+            <button id="verify-btn" class="btn-tf" onclick="verifyAndDispatch()">Verify & Complete Order</button>
+        </div>
+    </div>
+    <div class="payment-modal-overlay" id="custom-alert-modal" onclick="closeAlertModal()">
+        <div class="payment-modal" onclick="event.stopPropagation()">
+            <span class="close-modal" onclick="closeAlertModal()">×</span>
+            <h3 class="brand-font" id="alert-title" style="font-size: 1.5rem; letter-spacing: 4px; margin-bottom: 15px;">NOTICE</h3>
+            <p id="alert-message" style="font-size: 0.8rem; color: var(--muted); margin-bottom: 30px; line-height: 1.5; text-transform: uppercase;">Message goes here</p>
+            <button class="btn-tf" onclick="closeAlertModal()">UNDERSTOOD</button>
+        </div>
+    </div>
+
+    <div id="toast">Added to Cart.</div>
+    <script src="script.js"></script>
+</body>
+</html>

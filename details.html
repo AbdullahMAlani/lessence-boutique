@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'ESSENCE | The Story</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #000000; --text: #ffffff; --border: #222222; --muted: #666666; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; min-height: 100vh; }
+        .brand-font { font-family: 'Jost', sans-serif; text-transform: uppercase; }
+        .image-side { width: 50%; background-size: cover; background-position: center; filter: grayscale(0.5); }
+        .content-side { width: 50%; padding: 80px 10%; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;}
+        .title { font-size: 3rem; letter-spacing: 5px; margin: 0 0 10px 0; }
+        .notes { font-size: 0.8rem; color: var(--muted); letter-spacing: 3px; margin-bottom: 40px; text-transform: uppercase;}
+        .story { font-size: 1rem; line-height: 2; font-weight: 300; color: #ccc; margin-bottom: 50px; }
+        .btn-tf { background: var(--text); color: var(--bg); border: 1px solid var(--text); padding: 20px 40px; font-family: 'Jost', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 4px; cursor: pointer; transition: 0.3s;}
+        .btn-tf:hover { background: transparent; color: var(--text); }
+        
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            .image-side, .content-side { width: 100%; }
+            .image-side { height: 50vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="image-side" id="prod-image"></div>
+    
+    <div class="content-side">
+        <h1 class="title brand-font" id="prod-name">Loading...</h1>
+        <div class="notes" id="prod-notes">T: -- | H: -- | B: --</div>
+        
+        <div class="story" id="ai-story"></div>
+
+        <div style="display: flex; gap: 15px;">
+            <button class="btn-tf" id="add-to-cart-btn" onclick="addToCartFromDetails()">Add to Cart</button>
+            <button class="btn-tf" style="background: transparent; color: var(--text); border: 1px solid var(--border);" onclick="window.close()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const inventory = [
+            { id: 101, name: "Creed Aventus", top: "Pineapple", heart: "Birch", base: "Musk", img: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=1000" },
+            { id: 102, name: "Tom Ford Tobacco Oud", top: "Whiskey", heart: "Spicy Notes", base: "Tobacco", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=1000" },
+            { id: 103, name: "Louis Vuitton Imagination", top: "Citron", heart: "Neroli", base: "Ambroxan", img: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=1000" },
+            { id: 201, name: "Dior Sauvage", top: "Pepper", heart: "Lavender", base: "Ambroxan", img: "https://images.unsplash.com/photo-1557170334-a9632e77c6e4?w=1000" },
+            { id: 202, name: "CK One", top: "Lemon", heart: "Jasmine", base: "Musk", img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=1000" }
+        ];
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('id'));
+        const product = inventory.find(p => p.id === productId);
+
+        if (product) {
+            document.getElementById('prod-image').style.backgroundImage = `url('${product.img}')`;
+            document.getElementById('prod-name').innerText = product.name;
+            document.getElementById('prod-notes').innerText = `T: ${product.top} | H: ${product.heart} | B: ${product.base}`;
+            
+            document.getElementById('ai-story').innerHTML = `
+                An olfactory masterpiece engineered for the modern connoisseur. 
+                <strong>${product.name}</strong> opens with an aggressive burst of ${product.top}, instantly demanding attention. 
+                As it settles onto the skin, a complex heart of ${product.heart} reveals a sophisticated duality—both ancient and utterly contemporary. 
+                <br><br>
+                The dry down is where the true architecture of the scent is revealed. A heavy, magnetic foundation of ${product.base} lingers for hours, 
+                leaving an unforgettable sillage. This is not merely a fragrance; it is a statement of intent.
+            `;
+        } else {
+            document.getElementById('prod-name').innerText = "Fragrance Not Found";
+            document.getElementById('ai-story').innerText = "The requested blend does not exist in our archives.";
+            document.getElementById('add-to-cart-btn').style.display = 'none';
+        }
+
+        function addToCartFromDetails() {
+            if (window.opener && !window.opener.closed) {
+                window.opener.addToCart(productId); 
+                const btn = document.getElementById('add-to-cart-btn');
+                btn.innerText = "ADDED TO CART ✓";
+                btn.style.background = "#4caf50";
+                btn.style.borderColor = "#4caf50";
+                setTimeout(() => window.close(), 1000);
+            } else {
+                alert("The main boutique tab was closed. Please return to the homepage to add items.");
+            }
+        }
+    </script>
+</body>
+</html>
