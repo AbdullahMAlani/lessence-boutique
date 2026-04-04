@@ -2,9 +2,9 @@ let inventory = []; // CRITICAL: This must be at the top
 
 window.addEventListener('DOMContentLoaded', async () => {
     console.log("Attempting to connect to Render...");
-    
-    try {
-        const res = await fetch('https://YOUR-NAME.onrender.com/api/products');
+
+try {
+        const res = await fetch('https://lessence-backend.onrender.com/api/products');
         
         console.log("Response Status:", res.status); // Should be 200
         
@@ -12,6 +12,13 @@ window.addEventListener('DOMContentLoaded', async () => {
             console.error("Server reached but returned an error.");
             return;
         }
+
+    const enterBtn = document.getElementById('enter-btn');
+    if (enterBtn) {
+        enterBtn.addEventListener('click', enterBoutique);
+    }
+    
+    
 
         inventory = await res.json();
         console.log("Inventory Data Received:", inventory);
@@ -142,7 +149,7 @@ function updateUI() {
     const cartFooter = document.getElementById('cart-footer');
     const cartDetails = document.getElementById('cart-checkout-details');
 
-    if (cart.length === 0) {
+    if (cart.length === 0) {    
         cartItemsContainer.innerHTML = `<div style="text-align: center; padding: 100px 20px; color: var(--muted);"><p class="brand-font" style="font-size: 1rem; margin-bottom: 30px; letter-spacing: 4px;">CART IS EMPTY</p><button class="btn-secondary" style="padding: 15px 30px; text-transform: uppercase; font-size: 0.7rem; cursor: pointer;" onclick="toggleCart(false)">Continue Shopping</button></div>`;
         cartFooter.style.display = 'none'; cartDetails.style.display = 'none'; return; 
     }
