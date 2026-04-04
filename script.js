@@ -1,4 +1,33 @@
-// script.js - L'ESSENCE Boutique Logic
+let inventory = []; // CRITICAL: This must be at the top
+
+window.addEventListener('DOMContentLoaded', async () => {
+    console.log("Connecting to L'ESSENCE Brain...");
+    
+    try {
+        // REPLACE THE URL BELOW WITH YOUR ACTUAL RENDER URL
+        const res = await fetch('https://YOUR-BACKEND-NAME.onrender.com/api/products');
+        
+        if (!res.ok) throw new Error("Server responded with error");
+        
+        inventory = await res.json();
+        console.log("Inventory Loaded:", inventory);
+        
+        // If we are already on the main page, show products
+        if (document.getElementById('collections')) {
+            renderProducts('all');
+        }
+    } catch (error) {
+        console.error("Backend Connection Failed:", error);
+        // PRO TIP: If the server is down, show a friendly message to the client
+        const grid = document.getElementById('collections');
+        if (grid) {
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                <p>Establishing secure connection to Private Blend Vault...</p>
+                <p style="font-size: 0.7rem; color: #666;">(Please refresh in 30 seconds while the server wakes up)</p>
+            </div>`;
+        }
+    }
+});
 
 // Automatically track the visit when the page loads
 window.addEventListener('DOMContentLoaded', () => {
@@ -15,6 +44,8 @@ function enterBoutique() {
     document.getElementById('main-content').style.opacity = "1";
     renderProducts('all');
 }
+
+document.getElementById('enter-btn').addEventListener('click', enterBoutique);
 
 function filterBoutique(filterType, btnElement = null) {
     if (btnElement) {
