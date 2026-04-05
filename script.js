@@ -1,5 +1,6 @@
 let inventory = [];
 let cart = [];
+// Ensure there is an 's' in https
 const BACKEND_URL = "https://lessence-backend.onrender.com";
 
 window.addEventListener('DOMContentLoaded', () => {
